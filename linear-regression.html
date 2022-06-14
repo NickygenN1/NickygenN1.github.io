@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/vs2015.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel = "icon" href =images/ML-logo.png type = "image/x-icon">
+          
+    <title>Linear Regression</title>
+</head>
+<body>
+    <div class="main">
+    <h1 class="yel">Linear Regression</h1>
+    <p>draw the linear line to close with all data as much as possible</p> 
+    <p><a href="#underhood">under the hood</a>&#160;&#160;<a href="#python">python code</a>&#160;&#160;<a style="font-size: 14px; margin-left: 400px" href="index.html">back to main page</a></p>
+    <br><p align="center"><img id="underhood" src="images/l1.png"></p><br>
+    <p>in math we have formular y = mx + b , where m is slope and b is y-intercept, this is a <strong>Hypothesis function</strong> 
+    in linear regression problem, we change b and m to theta form like this</p><br>
+    <p align="center"><img src="images/normal1.PNG" width="500px"></p><br>
+    <p>where n is a number of feature, for example in simple formular y = mx + b have 2 feature m and b,  we can simplify this formular in form Theta transpose dot with X</p>
+    <p>we can find the Theta by <strong>Normal Equation</strong > and <strong>Gradient Descent</strong>. <br>How we know the Theta we found is good ? , we can evaluate by <strong>cost function</strong> : 
+    function that measure the different between y_pred and y_true (every Hypothesis function has own cost function) in this algorithm is mean squared error (MSE) :</p><br>
+    <p align="center"><img src="images/c.PNG" width="300px"></p>
+    <br><p>m is number of the data, y is a True labels and y_hat is a Predicttion labels, purpose is minimize cost fuction (is called Global minimum) </p>
+    
+    <br><br><h2 class="yel">Normal Eqution</h2>
+    <p>fine the θ value that minimizes the cost function,
+    this solution  perform better when have little data (less than 100 instances)</p>
+    <p align="center"><img src="images/normal2.PNG" width="300px" alt=""></p>
+    
+    <pre>
+        <code class="code">
+    import numpy as np
+
+    np.random.seed(42)
+    X = 2*np.random.rand(100,1) # rand = [0,1] shape = 100,1
+    y = 4+3*X + np.random.randn(100,1) # randn = standard noramal
+
+    X_b = np.c_[np.ones((100,1)),X] # X0 = 1 for matrix multiplication
+    theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
+        </code>
+    </pre>
+    this will get theta = 4.214 and 2.77 that close  to y = 4 + 3X + Guassian noise
+    (Gaussian noise is a type of random noise that has a probability density function (PDF) that is defined by a normal distribution with a mean of zero.)
+    <br>we get θ = 4.214 and 2.77 because noise made it hard to find θ = 4 and 3
+
+    <br><br><h2 class="yel">Gradient Descent</h2>
+    <p>the idea of Gradient descent is start with random weight and bias (yeah just random, if lucky will find the minimum point) then find what direct is lower by Calculus (derivative).
+
+    <br>suppose you are lost in the mountains in a dense fog. you can only feel slope by your feet. if you have exactly step(learning rate) you can quickly go downhill. example formular for 2 features</p>
+    <p align="center"><img src="images/g1.PNG" width="400px" alt=""></p>
+    <p align="center"><img src="images/g2.PNG" width="400px" alt=""></p>
+    <p align="center"><img src="images/g3.PNG" width="350px" alt=""><img src="images/g4.PNG" width="350px" alt=""></p>
+    <p>we start with random theta then find the slope and go to the negative way (to the minimum point) each step decide by Learning Rate (alpha in picture),  if large will jump across the minimum point if small will take a long time or cannot jump out of local minima</p>
+    <br><h3>type of Gradient descent</h3>
+    <br> <p><strong>Batch Gradient Descent</strong> : to implement Gradient Descent, need to compute the gradient of the cost function, all the training data is taken into consideration to take a single step(actaully, Full Gradient Descent would a better name)
+    <br><strong> Stochastic Gradient Descent </strong>: main problem with Batch GD is it uses the whole training set to compute the gradeints at every step, which makes it very slow when is large scale. Stochastic GD picks a random instance in the training set at every step and compute the gradients based on that single instance.
+    but Stochatic will bounce around, so finally parameters values are good, but not optimal. but its will jump out of local minimum to find global minimum. This process is akin to simulated annealing. The function that determines the leraning rate at each iteration is called Learning Schedule
+   <br><strong>Mini-batch Gradient Descent</strong> : compute the gradient on small random sets of instance. Mini-batch have advantage over SGD is that you can get performance boost from GPUs.
+    <p style="padding-left: 20px;" > - will walking closer to minimum than SGD <br>
+        - but suffer from go out local minima</p> </p>
+    <br><br>
+    <h2 id="python" class="yel">Python code </h2>
+    <p>when we train model must have 3 set train validation and test set but i will skip for now.</p>
+    <br>
+    <p>LinearRegression model</p>
+    <pre>
+        <code class="code">
+    from sklearn.linear_model import LinearRegression
+
+    linear_model = LinearRegression()
+    linear_model.fit(X,y)
+    linear_model.intercept_, linear_model.coef_ # 4.215 ,2.770
+
+    #predict point 0 and 2
+    linear_pred = linear_model.predict(np.array([0,2]).reshape(-1,1)) 
+    linear_pred # 4.215, 9.75532293
+    </code>
+</pre><br>
+
+    <p>Stochastic Gradient Descent model</p>
+    <pre>
+        <code class="code">
+    from sklearn.linear_model import SGDRegressor
+
+    #tol is a tolerance will stop if (loss > best_loss - tol) 
+    #eta0 is The initial learning rate 
+    SGD_model = SGDRegressor(max_iter=1000, tol=1e-3, eta0=.1) 
+    SGD_model.fit(X,y.ravel()) # change y to 1d array
+
+    SGD_model.intercept_, SGD_model.coef_ #4.211, 2.774
+
+    #predict point 0 and 2
+    sgd_pred = SGD_model.predict(np.array([0,2]).reshape(-1,1))
+    sgd_pred # 4.211, 9.759
+        </code>
+    </pre>
+    
+    <p>see what is better</p>
+    <pre>
+        <code class="code">
+    plt.figure(figsize=(10,6))
+    plt.scatter(X,y, s=5, color='orange')
+    plt.plot([0,2],linear_pred, label='linear model', color='blue')
+    plt.plot([0,2],sgd_pred, label='SGD model', color='black')
+    plt.legend(fontsize=14);
+    </code>
+    </pre>
+    <p align="center"><img src="images/lg.png" alt=""></p>
+    <br><p>it's the same line (but if not, what model is perform better)</p>
+    <pre>
+        <code class="code">
+    print(f'linear model : {linear_model.score(X,y):.6f}')
+    print(f'SGD model : {SGD_model.score(X,y):.6f}')
+        </code>
+    </pre>
+    <p>linear model : 0.769274 <br>
+    SGD model : 0.769272</p>
+    <br><p>this is R^2 score(r-squared) if close to 1 model is perform better, linear model slighly perform better</p>
+    <br><p align="center"><img src="images/r1.PNG" width="400px" alt=""></p><br>
+    <p>ssr( Residual sum of squares ) , sst(Total sum of squares)</p>
+    <br><br>
+    <p>see more information: <br>
+    - <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html" , target="_blank">LinearRegression</a>
+    - <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html" , target="_blank">SGDRegressor</a>
+    <a style="font-size: 14px; margin-left: 400px;" href="index.html">back to main page</a>
+    </p>
+
+</div>
+</body>
+</html>
