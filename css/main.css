@@ -31,21 +31,20 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(73, 70, 70, 0.655); 
+  background: rgba(210, 202, 202, 0.655); 
 }
  
 ::-webkit-scrollbar-thumb {
   background: purple;
-  border-radius: 30px;
-  max-height: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(188, 108, 188); 
+  background: rgb(215, 96, 215); 
 }
 
 .main {
-    font-size: 18px;
+    line-height: 25px;
+    font-size: 20px;
     width: 60vw;
     padding-bottom: 30px;
 }

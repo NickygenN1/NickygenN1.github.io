@@ -16,7 +16,7 @@
     <div class="main">
     <h1 class="yel">Linear Regression</h1>
     <p>draw the linear line to close with all data as much as possible</p> 
-    <p><a href="#underhood">under the hood</a>&#160;&#160;<a href="#python">python code</a>&#160;&#160;<a style="font-size: 14px; margin-left: 400px" href="index.html">back to main page</a></p>
+    <p><a href="#underhood">under the hood</a>&#160;&#160;<a href="#scikit-learn">scikit-learn</a>&#160;&#160;<a style="font-size: 14px; margin-left: 400px" href="index.html">back to main page</a></p>
     <br><p align="center"><img id="underhood" src="images/l1.png"></p><br>
     <p>in math we have formular y = mx + b , where m is slope and b is y-intercept, this is a <strong>Hypothesis function</strong> 
     in linear regression problem, we change b and m to theta form like this</p><br>
@@ -51,11 +51,43 @@
     <br><br><h2 class="yel">Gradient Descent</h2>
     <p>the idea of Gradient descent is start with random weight and bias (yeah just random, if lucky will find the minimum point) then find what direct is lower by Calculus (derivative).
 
-    <br>suppose you are lost in the mountains in a dense fog. you can only feel slope by your feet. if you have exactly step(learning rate) you can quickly go downhill. example formular for 2 features</p>
+    <br>suppose you are lost in the mountains in a dense fog. you can only feel slope by your feet. if you have exactly step(learning rate) you can quickly go downhill. example formular for 2 features</p> <br>
     <p align="center"><img src="images/g1.PNG" width="400px" alt=""></p>
     <p align="center"><img src="images/g2.PNG" width="400px" alt=""></p>
-    <p align="center"><img src="images/g3.PNG" width="350px" alt=""><img src="images/g4.PNG" width="350px" alt=""></p>
+    <p align="center"><img src="images/g3.PNG" width="350px" alt=""><img src="images/g4.PNG" width="350px" alt=""></p> <br>
     <p>we start with random theta then find the slope and go to the negative way (to the minimum point) each step decide by Learning Rate (alpha in picture),  if large will jump across the minimum point if small will take a long time or cannot jump out of local minima</p>
+    
+    <pre>
+        <code class="code">
+    def Linear_GD(X, y, learning_rate, epochs):
+        '''
+        y = wx + b
+        '''
+        w, b = np.random.randn(2) # initial random
+        m = len(y.ravel()) # total instance
+
+        for _ in range(epochs) :
+            y_pred = w*X + b 
+            db = 1/m * np.sum((y_pred - y))
+            dw = 1/m * np.sum((y_pred - y)*X)
+            b = b - (learning_rate*db) # update b
+            w = w - (learning_rate*dw) # update w
+            mse = np.mean(np.square((w*X + b) - y))
+        
+        return w, b ,mse, epochs
+    </code>
+</pre><p>make predictions</p>
+<pre>
+    <code class="code">
+    w, b, mse, epochs = Linear_GD(X, y, .01, 1000)
+    y_pred = w*np.array([-3,3]) + b # y = wx + b
+    plt.scatter(X, y, s=3, c='orange');
+    plt.plot([-3, 3], y_pred)
+    plt.title(f'{epochs} epochs , loss = {mse:.4f}');
+    </code>
+</pre>
+<p align="center"><img src="images/lg1.png" alt=""><img src="images/lg2.png" alt=""></p>
+    
     <br><h3>type of Gradient descent</h3>
     <br> <p><strong>Batch Gradient Descent</strong> : to implement Gradient Descent, need to compute the gradient of the cost function, all the training data is taken into consideration to take a single step(actaully, Full Gradient Descent would a better name)
     <br><strong> Stochastic Gradient Descent </strong>: main problem with Batch GD is it uses the whole training set to compute the gradeints at every step, which makes it very slow when is large scale. Stochastic GD picks a random instance in the training set at every step and compute the gradients based on that single instance.
@@ -64,7 +96,7 @@
     <p style="padding-left: 20px;" > - will walking closer to minimum than SGD <br>
         - but suffer from go out local minima</p> </p>
     <br><br>
-    <h2 id="python" class="yel">Python code </h2>
+    <h2 id="scikit-learn" class="yel">scikit-learn</h2>
     <p>when we train model must have 3 set train validation and test set but i will skip for now.</p>
     <br>
     <p>LinearRegression model</p>
@@ -127,7 +159,7 @@
     <p>see more information: <br>
     - <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html" , target="_blank">LinearRegression</a>
     - <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html" , target="_blank">SGDRegressor</a>
-    <a style="font-size: 14px; margin-left: 400px;" href="index.html">back to main page</a>
+    <a style="font-size: 14px; margin-left: 350px;" href="index.html">back to main page</a>
     </p>
 
 </div>
