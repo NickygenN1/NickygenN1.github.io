@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/vs2015.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel = "icon" href =images/ML-logo.png type = "image/x-icon">
+          
+    <title>Polynomial Regression</title>
+</head>
+<body>
+<div class="main">
+    
+    <!-- top page -->
+    <h1 class="yel">Polynomial Regression</h1>
+    <p>what about non-linear line, we can't draw linear line to fit it.</p> 
+    <p><a style="font-size: 14px; " href="index.html">back to main page</a></p>
+    
+    <!-- content  -->
+    <pre>
+        <code class="code">
+    np.random.seed(42)
+    X = 6*np.random.rand(500,1) - 3
+    y =  (.5* X**3 )+  (.5 * X**2) + X + 2 + np.random.randn(500,1)
+
+    plt.scatter(X,y,s=3, color='red')
+    plt.title('y = 0.5x^3 + 0.5x^2 + x + 2 + noise');
+        </code>
+    </pre>
+    <p align="center"><img src="images/c2.png" width="400px" alt=""></p>
+    <p>we can do by add extra column to the feature to make it like multiple degree data, before do that we should seperate data to train and test set.</p>
+    
+    <pre>
+        <code class="code">
+    np.random.permutation(len(y)) # random index order
+    train_size = int(.8 * len(y)) # train 80% of the data
+    X_train = X[:train_size] # (400,1)
+    X_test = X[train_size:] #(100,1)
+    y_train = y[:train_size] # (400,1)
+    y_test = y[train_size:] # (100,1)
+        </code>
+    </pre>
+    <p align="center"><img src="images/c3.png" width="400px" alt=""></p>
+    <p>now we can add feature column to make multiple degree</p>
+    <pre>
+        <code class="code">
+    from sklearn.preprocessing import PolynomialFeatures
+
+    # if include bias mean add bias = 1 to first column but we don't need that.
+    poly_features = PolynomialFeatures(degree=3, include_bias=False)
+    # we fit and transform X_train to multidegree
+    X_poly_train = poly_features.fit_transform(X_train) 
+        </code>
+    </pre>
+    <p align="center"><img src="images/c1.png" width="400px" alt=""></p>
+    <p>we add each column by the degree , now we can use LinearRegression model to train it.</p>
+    <pre>
+        <code class="code">
+    from sklearn.linear_model import LinearRegression
+
+    Linear_model = LinearRegression()
+    Linear_model.fit(X_poly_train, y_train)
+    Linear_model.coef_ , Linear_model.intercept_
+    # we get >> [1.05725971, 0.46865045, 0.50061545], [2.07186503]
+        </code>
+    </pre>
+    <p>we have original formular : y = 0.5x^3 + 0.5x^2 + x + 2 + noise
+    <br> but the model predict(because noise) : y = 0.5006x^3 + 0.469x^2 + 1.057x + 2.07 </p><br>
+    <p>Let's make predictions on the test set</p>
+
+    <pre>
+        <code class="code">
+    # use scale form X_train to transform(because model train on X_train)
+    X_poly_test = poly_features.transform(X_test) 
+    y_preds = Linear_model.predict(X_poly_test)
+
+    plt.scatter(X_test,y_test,s=3, color='red', label='testing')
+    plt.scatter(X_test,y_preds,s=3, color='blue', label='prediction')
+    plt.legend(fontsize=14);
+        </code>
+    </pre>
+    <p align="center"><img src="images/c4.png" width="400px" alt=""></p>
+    <p>looks good because we should the right degree(degree = 3) but in real world we can't know what is right.</p>
+
+    <br>
+    <p align="center"><img src="images/c8.png" width="350px" alt=""><img src="images/c6.png" width="350px" alt=""></p>
+    <p align="center"><img src="images/c5.png" width="350px" alt=""><img src="images/c7.png" width="350px" alt=""></p>
+
+    <br>
+    <p>the model with degree = 1 is <strong>underfitting</strong> (can't fit line perfectly) , on the other hand degree = 20 even score on the set is same as degree = 3 but it's <strong>overfitting</strong> if you look closer it try to fit with each of the point in the training set(if had more test set it will perform badly). </p>
+    
+    <br>
+    <p align="center"><img src="images/c9.png" width="350px" alt=""><img src="images/c10.png" width="350px" alt=""></p>
+    <br>
+    <p>I will talk about how to make good fit  model (like model of degree = 3) in next chapter. </p>
+
+    
+    
+    <!-- footer --> <br>
+    <p>see more information: <br>
+    - <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html" , target="_blank">PolynomialFeatures</a>
+    <a style="font-size: 14px; margin-left: 350px;" href="index.html">back to main page</a>
+    </p>
+
+</div>
+</body>
+</html>

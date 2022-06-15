@@ -17,7 +17,7 @@ body {
     line-height: 18px;
     font-size: 14px;
     letter-spacing: 1px;
-    width: 100ch;
+    width: 60vw;
     border-radius: 5px;
 }
 
@@ -52,4 +52,11 @@ body {
 .yel {
     background-color: yellow;
     display: inline;
+}
+
+@media only screen and (max-width: 1000px) {
+  .main, .code {
+    width: 90vw;
+    padding-left: 20px;
+  }
 }
